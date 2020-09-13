@@ -19,6 +19,9 @@ app.get('/', (req, res) => {
   res.send('Hello, world!')
 })
 
+app.use('/api/auth', authRouter)
+app.use('/api/users', usersRouter)
+
 app.use(function errorHandler(error, req, res, next) {
   let response
   if (NODE_ENV === 'production') {
