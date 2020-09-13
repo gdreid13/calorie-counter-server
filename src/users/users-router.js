@@ -6,7 +6,7 @@ const jsonBodyParser = express.json()
 
 usersRouter
   .post('/', jsonBodyParser, (req, res, next) => {
-    const { password, user_name, fullname,  } = req.body
+    const { password, user_name, fullname, gender, age } = req.body
 
     for (const field of ['fullname', 'user_name', 'password'])
       if (!req.body[field])
@@ -35,6 +35,8 @@ usersRouter
               user_name,
               password: hashedPassword,
               fullname,
+              gender,
+              age,
               date_created: 'now()',
             }
 

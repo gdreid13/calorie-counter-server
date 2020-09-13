@@ -40,6 +40,8 @@ const UsersService = {
       id: user.id,
       fullname: xss(user.fullname),
       user_name: xss(user.user_name),
+      gender: xss(user.gender),
+      age: xss(user.age)
       date_created: new Date(user.date_created),
     }
   },
