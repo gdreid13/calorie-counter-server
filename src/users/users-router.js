@@ -55,4 +55,11 @@ usersRouter
       .catch(next)
   })
 
+
+  usersRouter
+    .get('/',(req,res,next)=>{
+      UsersService.getAllUsers(req.app.get('db'))
+        .then(users=>res.json(users))
+        .catch(next)
+    })
 module.exports = usersRouter
