@@ -1,7 +1,9 @@
 const express = require('express')
 const AuthService = require('./auth-service')
+const jsonBodyParser = require('body-parser');
 const { requireAuth } = require('../middleware/jwt-auth')
 
+const authRouter = express.Router();
 authRouter
   .post('login', jsonBodyParser, (req, res, next) => {
     const { user_name, password } = req.body
