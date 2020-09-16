@@ -1,12 +1,12 @@
 const xss = require('xss')
 
-const MealService = {
-  getAllMeal(db) {
+const MealsService = {
+  getAllMeals(db) {
     return db
       .from('meals AS meal')
       .select(
         'meal.id',
-        'product.date_created',
+        'meal.date_created',
         'meal.date_modified',
         'meal.alldaycalories',
         db.raw(
@@ -30,13 +30,13 @@ const MealService = {
   },
 
   getById(db, id) {
-    return MealService.getAllMeal(db)
+    return MealsService.getAllMeals(db)
       .where('meal.id', id)
       .first()
   },
 
 
-  serializeMeal(meal) {
+  serializeMeals(meal) {
     const { author } = meal
     return {
       id: meal.id,
@@ -59,9 +59,9 @@ const MealService = {
       .returning('*')
       .then(([meal]) => meal)
       .then(meal =>
-        MealService.getById(db, meal.id)
+        MealsService.getById(db, meal.id)
       )
   },
 }
 
-module.exports = ProductsService
+module.exports = MealsService

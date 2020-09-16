@@ -1,29 +1,29 @@
 const express = require('express')
-const MealService = require('./meals-service')
+const MealsService = require('./meals-service')
 const { requireAuth } = require('../middleware/jwt-auth')
-const productsRouter = express.Router()
+const mealsRouter = express.Router()
 const jsonBodyParser = express.json()
 
 
-mealRouter
+mealsRouter
   .route('/')
   .get((req, res, next) => {
-    MealService.getAllProducts(req.app.get('db'))
+    MealsService.getAllMeals(req.app.get('db'))
       .then(meal => {
-        res.json(meal.map(MealService.serializeMeal))
+        res.json(meal.map(MealsService.serializeMeals))
       })
       .catch(next)
   })
 
-mealRouter
+mealsRouter
   .route('/:meal_id')
   .all(requireAuth)
   .all(checkMealExists)
   .get((req, res) => {
-    res.json(MealService.serializeProduct(res.product))
+    res.json(MealsService.serializeMeals(res.meals))
   })
 
-mealRouter
+mealsRouter
   .route('/')
   .post(requireAuth, jsonBodyParser, (req, res, next) => {
     const { userId, alldaycalories, } = req.body
@@ -38,21 +38,21 @@ mealRouter
     newMeal.author_id = req.user.id
 
 
-    MealService.insertProduct(
+    MealsService.insertMeals(
       req.app.get('db'),
       newMeal
     )
       .then(meal => {
         res
           .status(201)
-          .json(MealService.serializeProduct(meal))
+          .json(MealService.serializeMeals(meal))
       })
       .catch(next)
     })
 
     async function checkMealExists(req, res, next) {
       try {
-        const meal = await MealService.getById(
+        const meal = await MealsService.getById(
           req.app.get('db'),
           req.params.meal_id
         )
@@ -69,4 +69,4 @@ mealRouter
       }
     }
     
-    module.exports = mealRouter
+    module.exports = mealsRouter
