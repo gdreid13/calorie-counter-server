@@ -5,28 +5,8 @@ const MealsService = {
     return db
       .from('meals AS meal')
       .select(
-        'meal.id',
-        'meal.user_id',
-        'meal.date_created',
-        'meal.date_modified',
-        'meal.alldaycalories',
-        db.raw(
-          `json_strip_nulls(
-            json_build_object(
-              'id', usr.id,
-              'alldaycalories', usr.alldaycalories,
-              'date_created', usr.date_created,
-              'date_modified', usr.date_modified,
-            )
-          ) AS "author"`
-        ),
+        '*',
       )
-      .leftJoin(
-        'caloriecounter_users AS usr',
-        'meal.author.id',
-        'usr.id',
-      )
-      .groupBy('meal.id', 'usr.id')
   },
 
   getById(db, id) {
