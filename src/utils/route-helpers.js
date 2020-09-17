@@ -1,8 +1,8 @@
 const express = require('express')
 const path= require('path')
 const xss= require('xss')
-const bodyParser= express.json()
-const {isWebUrl}= require('valid-url')
+const jsonBodyParser= express.json()
+
 
 const GeneralService={
     getAllItems(db,dbName){
@@ -23,4 +23,4 @@ const GeneralService={
     }
 }
 
-module.exports={GeneralService,express,path,xss,bodyParser,isWebUrl}
+module.exports={GeneralService,express,path,xss,jsonBodyParser}
