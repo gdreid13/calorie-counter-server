@@ -36,7 +36,8 @@ const makeTables= {
     meals(){
         return [
             {
-                "id": 1,"userId": 1,
+                "id": 1,
+                "userId": 1,
                 "alldaycalories": "645",
                 "date_modified": null,
                 "date_created": "2020-09-16T02:43:41.247Z"
