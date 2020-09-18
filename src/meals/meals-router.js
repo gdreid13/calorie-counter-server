@@ -7,7 +7,7 @@ const jsonBodyParser = express.json()
 
 mealsRouter
   .route('/')
-  .get((req, res, next) => {
+  .get(requireAuth, (req, res, next) => {
     MealsService.getAllMeals(req.app.get('db'))
       .then(meal => {
         res.json(meal.map(MealsService.serializeMeals))
