@@ -4,38 +4,72 @@ const bcrypt= require('bcryptjs')
 const makeTables= {
     users(){
         return [
-            {   id: 1,
-                full_name:'firstName',
-                username:'testusername1',password: 'testPassword1' ,
-                age: 18 ,gender: 'Male' ,
-                last_modified: '2020-08-01T07:57:55.195Z'    },
-    
-            {   id: 2,
-                full_name:'firstName',
-                username:'userName2' ,password: 'testPassword2' ,
-                age: 18 ,gender: 'Female' ,
-                last_modified: '2020-08-01T07:57:55.195Z'  },
-    
-            {   id: 3,
-                full_name:'firstName' ,
-                username:'userName3' ,password: 'testPassword3' ,
-                age: 18 ,gender: 'Male' ,
-                last_modified: '2020-08-01T07:57:55.195Z'   },
+            {   "id": 1,
+                "full_name": "greg",
+                "user_name": "greg123",
+                "password": "aaAA11!!",
+                "gender": "male", "age": "25",
+                "weight": "170","height": "5 11",
+                "date_modified": null,
+                "date_created": "2020-09-16T02:43:41.247Z"
+            },
+            {   "id": 2,
+                "full_name": "kiuds",
+                "user_name": "kidus123",
+                "password": "aaAA11!!",
+                "gender": "male", "age": "25",
+                "weight": "170","height": "5 11",
+                "date_modified": null,
+                "date_created": "2020-09-16T02:43:41.247Z"
+            },
+            {   "id": 3,
+                "full_name": "typnek",
+                "user_name": "ty123",
+                "password": "aaAA11!!",
+                "gender": "male","weight": "170",
+                "height": "5 11","age": "25",
+                "date_modified": null,
+                "date_created": "2020-09-16T02:43:41.247Z"
+            },
         ]
-    },   
+    }, 
+    meals(){
+        return [
+            {
+                "id": 1,"userId": 1,
+                "alldaycalories": "645",
+                "date_modified": null,
+                "date_created": "2020-09-16T02:43:41.247Z"
+            },
+            {
+                "id": 2,"userId": 2,
+                "alldaycalories": "645",
+                "date_modified": null,
+                "date_created": "2020-09-16T02:43:41.247Z"
+            },
+            {
+                "id": 3,"userId": 3,
+                "alldaycalories": "645",
+                "date_modified": null,
+                "date_created": "2020-09-16T02:43:41.247Z"
+            },
+        ]
+    } 
 }
 const prepareTest={
     getData(){
         const testUsers= makeTables.users()
-        return {testUsers}
+        const testMeals= makeTables.meals()
+        return {testUsers,testMeals}
     },
     getTestData(name){
-        const {testUsers}=this.getData()
-        const {newUser}= tools.makeNewItem()
-        const {user}= tools.makeUpdatedItem()
+        const {testUsers,testMeals}=this.getData()
+        const {newUser,newMeal}= tools.makeNewItem()
+        const {user,meal}= tools.makeUpdatedItem()
         
         const array=[
             {db:"users",all: testUsers,newItem:newUser, updatedFields:user},
+            {db:"meals",all: testMeals,newItem:newMeal, updatedFields:meal},
         ]
         const obj= array.find(obj=>obj.db===name) || {all:[],newItem:{},updatedFields:[]}
         const AllItems= obj.all
@@ -46,7 +80,7 @@ const prepareTest={
     },
     seedTables(db,data){
         const {testUsers}= data
-        return this.seedTable(db,'users',testUsers)
+        return this.seedTable(db,'caloriecounter_users',testUsers)
             //.then(()=>testReviews.length && this.seedTable(db,'reviews',testReviews))
     },
     seedTable(db,dbName,items){
@@ -62,21 +96,17 @@ const prepareTest={
             ...user,
             password: bcrypt.hashSync(user.password,1)
         }))*/
-        return db.into('users').insert(users)
+        return db.into('caloriecounter_users').insert(users)
             .then(()=>db.raw(
-                `SELECT setval('users_id_seq',?)`,
+                `SELECT setval('caloriecounter_users_id_seq',?)`,
                 [users[users.length-1].id], //update the auto sequence to stay in sync
             ))
     },
     cleanTables(db){
         return db.raw(
             `TRUNCATE
-                reports,
-                movie_cast,
-                reviews,
-                artists,
-                movies,
-                users
+                meals,
+                caloriecounter_users
             RESTART idENTITY CASCADE`
         )
     }
@@ -107,18 +137,24 @@ const tools={
     makeNewItem(){
         const newUser= {
             "full_name": "Alex", 
-            "username": "aw1990", "password": "11AAaa!!",
-            "age": 18, "gender": "Male"
+            "user_name": "aw1990", "password": "11AAaa!!",
+            "age": 18, "gender": "Male", "weight": "130", "height":"70"
         }
-        
-        return {newUser}
+        const newMeal={
+            "userid": 2,
+            "alldaycalories": 900,
+        }
+        return {newUser,newMeal}
     },
     makeUpdatedItem(){
         const user=[
             {"With_password":{"password": "newP@ssword123"}},
             //{"Without_password":{"username": "newUserName"}}
         ]
-        return {user}
+        const meal=[
+            {"Update_meal":{}}
+        ]
+        return {user,meal}
     },
     hashPassword(password){
         return bcrypt.hash(password,12)
@@ -126,4 +162,4 @@ const tools={
 }
 
 
-module.exports= {makeTables,prepareTest,expected,tools}
+module.exports= {makeTables,prepareTest,tools}
