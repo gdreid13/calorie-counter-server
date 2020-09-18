@@ -26,8 +26,8 @@ mealsRouter
 mealsRouter
   .route('/')
   .post(requireAuth, jsonBodyParser, (req, res, next) => {
-    const { userId, alldaycalories, } = req.body
-    const newMeal = { userId, alldaycalories, }
+    const { userid, alldaycalories, } = req.body
+    const newMeal = { userid, alldaycalories, }
 
     for (const [key, value] of Object.entries(newMeal))
       if (value == null)
@@ -35,17 +35,17 @@ mealsRouter
           error: `Missing '${key}' in request body`
         })
 
-    newMeal.author_id = req.user.id
+   
 
-
-    MealsService.insertMeals(
+     
+    MealsService.insertMeal(
       req.app.get('db'),
       newMeal
     )
       .then(meal => {
         res
           .status(201)
-          .json(MealService.serializeMeals(meal))
+          .json(MealsService.serializeMeals(meal))
       })
       .catch(next)
     })
