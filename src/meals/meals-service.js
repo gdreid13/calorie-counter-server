@@ -5,28 +5,8 @@ const MealsService = {
     return db
       .from('meals AS meal')
       .select(
-        'meal.id',
-        'meal.date_created',
-        'meal.date_modified',
-        'meal.alldaycalories',
-        db.raw(
-          `json_strip_nulls(
-            json_build_object(
-              'id', usr.id,
-              'username', usr.user_name,
-              'fullname', usr.full_name,
-              'date_created', usr.date_created,
-              'date_modified', usr.date_modified
-            )
-          ) AS "author"`
-        ),
+        '*',
       )
-      .leftJoin(
-        'caloriecounter_users AS usr',
-        'meal.author_id',
-        'usr.id',
-      )
-      .groupBy('meal.id', 'usr.id')
   },
 
   getById(db, id) {
@@ -37,7 +17,7 @@ const MealsService = {
 
 
   serializeMeals(meal) {
-    const { author } = meal
+    const { author} = meal
     return {
       id: meal.id,
       alldaycalories: xss(meal.alldaycalories),
