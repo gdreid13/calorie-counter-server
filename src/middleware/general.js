@@ -1,4 +1,5 @@
 const {GeneralService}= require('../utils/route-helpers')
+const xss = require('xss')
 
 async function checkItemExists(req, res, next,dbName) {
     try {

@@ -1,72 +1,98 @@
-const express = require('express')
-const MealsService = require('./meals-service')
+const {express,path,jsonBodyParser,GeneralService}= require('../utils/route-helpers')
 const { requireAuth } = require('../middleware/jwt-auth')
+
+const MealsService = require('./meals-service')
 const mealsRouter = express.Router()
-const jsonBodyParser = express.json()
 
+//MIDDLEWARE:
+const {checkItemExists,sanitizeItem}= require('../middleware/general')
 
-mealsRouter
-  .route('/')
+mealsRouter.route('/')
+  //.all(requireAuth)
   .get((req, res, next) => {
+      const {userId}= req.query
+      if (userId) {
+        MealsService.getMealsByUser(req.app.get('db'),userId)
+        .then(meals=>res.status(200).json(meals)).catch(next)
+      }
+      else GeneralService.getAllItems(req.app.get('db'),'meals')
+        .then(meals=>res.status(200).json(meals)).catch(next)
+
+    /*
     MealsService.getAllMeals(req.app.get('db'))
       .then(meal => {
         res.json(meal.map(MealsService.serializeMeals))
       })
-      .catch(next)
+      .catch(next)*/
   })
-
-mealsRouter
-  .route('/:meal_id')
-  .all(requireAuth)
-  .all(checkMealExists)
-  .get((req, res) => {
-    res.json(MealsService.serializeMeals(res.meals))
-  })
-
-mealsRouter
-  .route('/')
-  .post(requireAuth, jsonBodyParser, (req, res, next) => {
-    const { userId, alldaycalories, } = req.body
-    const newMeal = { userId, alldaycalories, }
+  .post(jsonBodyParser, (req, res, next) => {
+    const { userId, alldaycalories} = req.body
+    const newMeal = { userId, alldaycalories}
 
     for (const [key, value] of Object.entries(newMeal))
       if (value == null)
         return res.status(400).json({
           error: `Missing '${key}' in request body`
-        })
+      })
 
-    newMeal.author_id = req.user.id
-
-
-    MealsService.insertMeals(
-      req.app.get('db'),
-      newMeal
-    )
-      .then(meal => {
-        res
-          .status(201)
-          .json(MealService.serializeMeals(meal))
+    const sanitizedMeal= sanitizeItem(newMeal,['alldaycalories'])
+    
+    GeneralService.insertItem(req.app.get('db'),'meals',sanitizedMeal)
+      .then(meal=>{
+        res.status(201)
+        .location(path.posix.join(req.originalUrl,`/${meal.id}`))
+        .json(meal)
       })
       .catch(next)
-    })
+    /*
+    newMeal.author_id = req.user.id
+    MealsService.insertMeals(req.app.get('db'),newMeal)
+      .then(meal => {
+        res.status(201).json(MealService.serializeMeals(meal))
+      })
+      .catch(next)
+    */
+  })
+  
 
-    async function checkMealExists(req, res, next) {
-      try {
-        const meal = await MealsService.getById(
-          req.app.get('db'),
-          req.params.meal_id
-        )
-    
-        if (!meal)
-          return res.status(404).json({
-            error: `meal doesn't exist`
-          })
-    
-        res.product = product
-        next()
-      } catch (error) {
-        next(error)
-      }
-    }
-    
-    module.exports = mealsRouter
+mealsRouter.route('/:id')
+  //.all(requireAuth)
+  //.all((req,res,next)=>checkItemExists(req,res,next,'meals'))
+  .get((req, res, next) => {
+    //res.json(res.item)
+    MealsService.getMealById(req.app.get('db'),req.params.id)
+      .then((meal)=>res.status(200).json(meal)).catch(next)
+  })
+  .delete((req,res,next)=>{
+      GeneralService.deleteItem(req.app.get('db'),'meals',req.params.id)
+        .then(()=>res.status(200).json('Meal has been deleted'))
+  })
+  .patch(jsonBodyParser,(req,res,next)=>{
+      const {userId, alldaycalories}= req.body
+      const mealToUpdate={userId,alldaycalories}
+      return GeneralService.updateItem(req.app.get('db'),'meals',req.params.id,mealToUpdate)
+        .then(()=>res.status(200).json('Success'))
+        .catch(next)
+
+  })
+/*
+async function checkMealExists(req, res, next) {
+  try {
+    const meal = await MealsService.getById(
+      req.app.get('db'),
+      req.params.meal_id
+    )
+
+    if (!meal)
+      return res.status(404).json({
+        error: `meal doesn't exist`
+      })
+
+    res.product = product
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+*/
+module.exports = mealsRouter

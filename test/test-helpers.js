@@ -10,6 +10,7 @@ const makeTables= {
                 "password": "aaAA11!!",
                 "gender": "male", "age": "25",
                 "weight": "170","height": "5 11",
+                "isAdmin": false,"profile_pic": null,
                 "date_modified": null,
                 "date_created": "2020-09-16T02:43:41.247Z"
             },
@@ -19,6 +20,7 @@ const makeTables= {
                 "password": "aaAA11!!",
                 "gender": "male", "age": "25",
                 "weight": "170","height": "5 11",
+                "isAdmin": false,"profile_pic": null,
                 "date_modified": null,
                 "date_created": "2020-09-16T02:43:41.247Z"
             },
@@ -28,6 +30,7 @@ const makeTables= {
                 "password": "aaAA11!!",
                 "gender": "male","weight": "170",
                 "height": "5 11","age": "25",
+                "isAdmin": false,"profile_pic": null,
                 "date_modified": null,
                 "date_created": "2020-09-16T02:43:41.247Z"
             },
@@ -38,20 +41,20 @@ const makeTables= {
             {
                 "id": 1,"userId": 1,
                 "alldaycalories": "645",
+                "date_created": "2020-09-16T02:43:41.247Z",
                 "date_modified": null,
-                "date_created": "2020-09-16T02:43:41.247Z"
             },
             {
                 "id": 2,"userId": 2,
                 "alldaycalories": "645",
+                "date_created": "2020-09-16T02:43:41.247Z",
                 "date_modified": null,
-                "date_created": "2020-09-16T02:43:41.247Z"
             },
             {
                 "id": 3,"userId": 3,
                 "alldaycalories": "645",
+                "date_created": "2020-09-16T02:43:41.247Z",
                 "date_modified": null,
-                "date_created": "2020-09-16T02:43:41.247Z"
             },
         ]
     } 
@@ -127,8 +130,12 @@ const tools={
             DELETE: supertest(app).delete(`/api/${endpoint}/${valid}`).set('Authorization',token),
             PATCH: supertest(app).patch(`/api/${endpoint}/${valid}`).set('Authorization',token)
         }
+        
+        const getItemById= endpoint==='meals'
+                        ? this.makeExpectedItem().expectedMeal
+                        : makeTables.users().find(obj=>obj.id==valid)
 
-        return {get,post,invalidFetch,validFetch}
+        return {get,post,invalidFetch,validFetch,getItemById}
     },
     makeAuthHeader(user){
         const token = Buffer.from(`${user.user_name}:${user.password}`).toString(`base64`)
@@ -141,7 +148,7 @@ const tools={
             "age": 18, "gender": "Male", "weight": "130", "height":"70"
         }
         const newMeal={
-            "userid": 2,
+            "userId": 2,
             "alldaycalories": 900,
         }
         return {newUser,newMeal}
@@ -152,9 +159,24 @@ const tools={
             //{"Without_password":{"username": "newUserName"}}
         ]
         const meal=[
-            {"Update_meal":{}}
+            {"Update_meal":{"alldaycalories":800}}
         ]
         return {user,meal}
+    },
+    makeExpectedItem(){
+        
+        const expectedMeal={
+            "id": 2,
+            "alldaycalories": "900",
+            "date_created": "2020-09-19T05:50:17.372Z",
+            "user:id": 2,
+            "user:full_name": "kidus",
+            "user:age": "25",
+            "user:gender": "male",
+            "user:height": "5 11",
+            "user:weight": "170"
+        }
+        return {expectedMeal}
     },
     hashPassword(password){
         return bcrypt.hash(password,12)

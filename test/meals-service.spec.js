@@ -2,7 +2,7 @@ const knex = require('knex')
 const app = require('../src/app')
 const bcrypt = require('bcryptjs')
 
-describe.only(`Meals service object`, function () {
+describe(`Meals service object`, function () {
   let db
   let testMeals = [
     {
