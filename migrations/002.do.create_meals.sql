@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS meals(
     id SERIAL PRIMARY KEY,
-    userId INTEGER references caloriecounter_users(user_name) ON DELETE CASCADE NOT NULL,    
+    userId INTEGER references caloriecounter_users(id) ON DELETE CASCADE NOT NULL,    
     alldaycalories text,
     date_created TIMESTAMPTZ NOT NULL DEFAULT now(),
     date_modified TIMESTAMPTZ

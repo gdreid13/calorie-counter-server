@@ -8,15 +8,24 @@ const mealsRouter = express.Router()
 const {checkItemExists,sanitizeItem}= require('../middleware/general')
 
 mealsRouter.route('/')
-  //.all(requireAuth)
+  .all(requireAuth)
   .get((req, res, next) => {
       const {userId}= req.query
       if (userId) {
         MealsService.getMealsByUser(req.app.get('db'),userId)
-        .then(meals=>res.status(200).json(meals)).catch(next)
+        .then(meals=>{
+          const fields=[,"alldaycalories",,"user:full_name",
+          "user:age","user:gender","user:height","user:weight"]
+          const sanitizedMeal= sanitizeItem(meals,fields)
+          res.status(200).json(sanitizedMeal)
+        }).catch(next)
       }
       else GeneralService.getAllItems(req.app.get('db'),'meals')
-        .then(meals=>res.status(200).json(meals)).catch(next)
+        .then(meals=>{
+          const fields=["alldaycalories"]
+          const sanitizedMeal= sanitizeItem(meals,fields)
+          res.status(200).json(sanitizedMeal)
+        }).catch(next)
 
     /*
     MealsService.getAllMeals(req.app.get('db'))
@@ -57,7 +66,7 @@ mealsRouter.route('/')
 
 mealsRouter.route('/:id')
   //.all(requireAuth)
-  //.all((req,res,next)=>checkItemExists(req,res,next,'meals'))
+  .all((req,res,next)=>checkItemExists(req,res,next,'meals'))
   .get((req, res, next) => {
     //res.json(res.item)
     MealsService.getMealById(req.app.get('db'),req.params.id)
