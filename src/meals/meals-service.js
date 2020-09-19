@@ -16,15 +16,13 @@ const MealsService = {
     .select('meals.id','meals.alldaycalories','meals.date_created',...userFields)
     .where('meals.id',id).first()
     .leftJoin('caloriecounter_users AS usr','meals.userId','usr.id')
-    
   },
   getMealsByUser(db,userId){
       return db('meals')
         .select('meals.id','meals.alldaycalories','meals.date_created',...userFields)
         .where({userId})
         .leftJoin('caloriecounter_users AS usr','meals.userId','usr.id')
-  }
-}
+  },
 
 
 	getAllMeals(db) {
