@@ -21,12 +21,12 @@ describe('ALL ENDPOINTS',()=>{
     before('cleanup', () => prepareTest.cleanTables(db))
     afterEach('cleanup', () => prepareTest.cleanTables(db))
     
-    const endPoints= ['users']
+    const endPoints= ['meals']
 
     endPoints.forEach(endpoint=>{
         const validId=2
         const invalidId=12345
-        const {get,post,invalidFetch,validFetch} = tools.makeFetchRequests(endpoint,validId,invalidId)
+        const {get,post,invalidFetch,validFetch,getItemById} = tools.makeFetchRequests(endpoint,validId,invalidId)
         const {AllItems,NewItem,UpdatedFields} = prepareTest.getTestData(endpoint)
 
         describe(`ENDPOINT ${endpoint}`,()=>{
@@ -103,9 +103,10 @@ describe('ALL ENDPOINTS',()=>{
                         }
                     })
                     
-                    it(`GET`,()=>{
-                        const expectedItem= AllItems.find(item=>item.id===validId)
-                        return validFetch.GET.expect(200,expectedItem)
+                    it.only(`GET`,()=>{
+                        //const expectedItem= AllItems.find(item=>item.id===validId)
+                        //validFetch.GET.then(res=>console.log('body',res.body))
+                        return validFetch.GET.expect(200,getItemById)
                     })
                     it(`DELETE`,()=>{
                         const expectedItems=AllItems.filter(item=>item.id!==validId)
