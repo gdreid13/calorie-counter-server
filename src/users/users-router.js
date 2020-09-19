@@ -21,7 +21,6 @@ usersRouter.route('/')
     const {password, user_name, full_name, gender, age,weight,height } = req.body
 
 
-
     for (const field of ['full_name', 'password','user_name','gender','age','weight','height'])
       if (!req.body[field])
         return res.status(400).json({

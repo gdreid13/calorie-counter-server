@@ -28,6 +28,9 @@ mealsRouter.route('/')
         }).catch(next)
 
     /*
+mealsRouter
+  .route('/')
+  .get(requireAuth, (req, res, next) => {
     MealsService.getAllMeals(req.app.get('db'))
       .then(meal => {
         res.json(meal.map(MealsService.serializeMeals))
@@ -37,13 +40,11 @@ mealsRouter.route('/')
   .post(jsonBodyParser, (req, res, next) => {
     const { userId, alldaycalories} = req.body
     const newMeal = { userId, alldaycalories}
-
     for (const [key, value] of Object.entries(newMeal))
       if (value == null)
         return res.status(400).json({
           error: `Missing '${key}' in request body`
       })
-
     const sanitizedMeal= sanitizeItem(newMeal,['alldaycalories'])
     
     GeneralService.insertItem(req.app.get('db'),'meals',sanitizedMeal)
@@ -65,10 +66,10 @@ mealsRouter.route('/')
   
 
 mealsRouter.route('/:id')
-  //.all(requireAuth)
+  .all(requireAuth)
   .all((req,res,next)=>checkItemExists(req,res,next,'meals'))
   .get((req, res, next) => {
-    //res.json(res.item)
+    // res.json(res.item)
     MealsService.getMealById(req.app.get('db'),req.params.id)
       .then((meal)=>res.status(200).json(meal)).catch(next)
   })
@@ -88,6 +89,10 @@ mealsRouter.route('/:id')
 async function checkMealExists(req, res, next) {
   try {
     const meal = await MealsService.getById(
+   
+
+     
+    MealsService.insertMeal(
       req.app.get('db'),
       req.params.meal_id
     )
@@ -95,6 +100,10 @@ async function checkMealExists(req, res, next) {
     if (!meal)
       return res.status(404).json({
         error: `meal doesn't exist`
+      .then(meal => {
+        res
+          .status(201)
+          .json(MealsService.serializeMeals(meal))
       })
 
     res.product = product
