@@ -1,6 +1,6 @@
 const xss = require('xss');
 
-const userFields=[
+const userFields = [
   'usr.id AS user:id',
   'usr.full_name AS user:full_name',
   'usr.age AS user:age',
@@ -10,7 +10,6 @@ const userFields=[
 ]
 
 const MealsService = {
-
   getMealById(db,id){
     return db('meals')
     .select('meals.id','meals.alldaycalories','meals.date_created',...userFields)
@@ -41,13 +40,11 @@ const MealsService = {
 		};
 	},
 
-	insertMeal(db, newMeal) {
+	insertMeals(db, newMeal) {
+    console.log(newMeal)
 		return db
 			.insert(newMeal)
 			.into('meals')
-			.returning('*')
-			.then(([ meal ]) => meal)
-	
 	}
 };
 
