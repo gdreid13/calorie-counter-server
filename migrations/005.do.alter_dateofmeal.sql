@@ -1,0 +1,2 @@
+ALTER TABLE meals ALTER COLUMN dateofmeal DATE;
+ALTER TABLE meals ALTER COLUMN dateofmeal SET NOT NULL;
