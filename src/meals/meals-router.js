@@ -16,7 +16,7 @@ mealsRouter.route('/')
       if (userId) {
         MealsService.getMealsByUser(req.app.get('db'),userId)
         .then(meals=>{
-          const fields=[,"alldaycalories",,"user:full_name",
+          const fields=[,"alldaycalories","user:full_name",
           "user:age","user:gender","user:height","user:weight"]
           const sanitizedMeal= sanitizeItem(meals,fields)
           res.status(200).json(sanitizedMeal)
