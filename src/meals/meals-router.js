@@ -16,7 +16,7 @@ mealsRouter.route('/')
       if (userId) {
         MealsService.getMealsByUser(req.app.get('db'),userId)
         .then(meals=>{
-          const fields=[,"alldaycalories",,"user:full_name",
+          const fields=[,"alldaycalories","user:full_name",
           "user:age","user:gender","user:height","user:weight"]
           const sanitizedMeal= sanitizeItem(meals,fields)
           res.status(200).json(sanitizedMeal)
@@ -81,7 +81,6 @@ mealsRouter
   
 
 mealsRouter.route('/:id')
-  .all(requireAuth)
   .all((req,res,next)=>checkItemExists(req,res,next,'meals'))
   .get((req, res, next) => {
     // res.json(res.item)
@@ -92,14 +91,14 @@ mealsRouter.route('/:id')
       GeneralService.deleteItem(req.app.get('db'),'meals',req.params.id)
         .then(()=>res.status(200).json('Meal has been deleted'))
   })
-/*   .patch(jsonBodyParser,(req,res,next)=>{
+.patch(jsonBodyParser,(req,res,next)=>{
       const {userId, alldaycalories}= req.body
       const mealToUpdate={userId,alldaycalories}
       return GeneralService.updateItem(req.app.get('db'),'meals',req.params.id,mealToUpdate)
         .then(()=>res.status(200).json('Success'))
         .catch(next)
 
-  }) */
+  })
 // commented this out because it won't work in its current state
 
 /*
