@@ -14,7 +14,7 @@
   },
   "keywords": [],
   "engines": {
-    "node": "12.17.0"
+    "node": ">=12.17.0"
   },
   "author": "",
   "license": "ISC",
@@ -28,9 +28,8 @@
     "jsonwebtoken": "8.5.1",
     "knex": "0.20.15",
     "morgan": "1.10.0",
-    "node": "14.11.0",
     "pg": "7.18.2",
-    "postgrator": "4.0.1",
+    "postgrator": "^4.0.1",
     "postgrator-cli": "4.0.0",
     "treeize": "2.1.2",
     "winston": "3.3.3",

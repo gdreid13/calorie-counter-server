@@ -31,7 +31,9 @@ mealsRouter.route('/')
 
   })
   .post(jsonBodyParser, (req, res, next) => {
-    const newMeal = req.body
+    const {userid, dateofmeal,breakfast_food,breakfast_calories,lunch_food,lunch_calories,dinner_food,dinner_calories,alldaycalories} = req.body
+
+    const newMeal= {userid, dateofmeal,breakfast_food,breakfast_calories,lunch_food,lunch_calories,dinner_food,dinner_calories,alldaycalories}
   /*   
     for (const [key, value] of Object.entries(newMeal))
       if (value == null)
