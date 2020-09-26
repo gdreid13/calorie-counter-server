@@ -75,8 +75,8 @@ mealsRouter.route('/:id')
         .then(()=>res.status(200).json('Meal has been deleted'))
   })
   .patch(jsonBodyParser,(req,res,next)=>{
-      const {userId, alldaycalories}= req.body
-      const mealToUpdate={userId,alldaycalories}
+      const {alldaycalories,breakfast_calories,breakfast_food,lunch_food,lunch_calories,dinner_food,dinner_calories}= req.body
+      const mealToUpdate={alldaycalories,breakfast_calories,breakfast_food,lunch_food,lunch_calories,dinner_food,dinner_calories}
       return GeneralService.updateItem(req.app.get('db'),'meals',req.params.id,mealToUpdate)
         .then(()=>res.status(200).json('Success'))
         .catch(next)
