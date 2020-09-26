@@ -51,12 +51,11 @@ const MealsService = {
 		};
 	},
 
-	insertMeals(db, newMeal) {
-		console.log(newMeal);
+	insertMeals(db, newMeal) {		
 		return db.insert(newMeal).into('meals');
 	},
-	updateMeals(db, date, userid, alldaycalorie) {		
-		return MealsService.getallMeals(db).where('dateofmeal', date).where('userid', userid).update(alldaycalorie);
+	updateMeals(db, date, userid, meals) {		
+		return MealsService.getallMeals(db).where('dateofmeal', date).where('userid', userid).update(meals);
 	}
 };
 
