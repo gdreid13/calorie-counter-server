@@ -28,11 +28,10 @@ app.use('/api/meals', mealsRouter)
 
 app.use(function errorHandler(error, req, res, next) {
   let response
-/*   if (NODE_ENV === 'production') {
+  if (NODE_ENV === 'production') {
     response = { error: { message: 'server error' } }
-  } else */ {
+  } else {
     console.error(error)
-    console.log(JSON.stringify(error))
     response = { message: error.message, error }
   }
   res.status(500).json(response)
