@@ -1,33 +1,15 @@
-const { path, GeneralService } = require('../utils/route-helpers')
-const { requireAuth } = require('../middleware/jwt-auth')
-const express = require('express')
-const MealsService = require('./meals-service')
-const mealsRouter = express.Router()
+const { path, GeneralService } = require('../utils/route-helpers');
+const { requireAuth } = require('../middleware/jwt-auth');
+const express = require('express');
+const MealsService = require('./meals-service');
+const mealsRouter = express.Router();
 
-const jsonBodyParser = express.json()
+const jsonBodyParser = express.json();
 
-//MIDDLEWARE:
-const {checkItemExists,sanitizeItem}= require('../middleware/general')
+const { checkItemExists } = require('../middleware/general');
 
-mealsRouter.route('/')
-  // .all(requireAuth)
-  .get((req, res, next) => {
-      const {userId}= req.query
-      if (userId) {
-        MealsService.getMealsByUser(req.app.get('db'),userId)
-        .then(meals=>{
-          const fields=[,"alldaycalories","user:full_name",
-          "user:age","user:gender","user:height","user:weight"]
-          const sanitizedMeal= sanitizeItem(meals,fields)
-          res.status(200).json(sanitizedMeal)
-        }).catch(next)
-      }
-      else GeneralService.getAllItems(req.app.get('db'),'meals')
-        .then(meals=>{
-          const fields=["alldaycalories"]
-          const sanitizedMeal= sanitizeItem(meals,fields)
-          res.status(200).json(sanitizedMeal)
-        }).catch(next)
+mealsRouter.route('/mealsbymonth/:id').get((req, res, next) => {
+	const yearAndMonth = req.params.id;
 
   })
   .post(jsonBodyParser, (req, res, next) => {
@@ -84,7 +66,6 @@ mealsRouter.route('/:id')
   })
 
 
-/*
 async function checkMealExists(req, res, next) {
   try {
     const meal = await MealsService.getById(
@@ -92,23 +73,58 @@ async function checkMealExists(req, res, next) {
       req.app.get('db'),
       req.params.meal_id
     )
+	MealsService.getMealsByMonth(req.app.get('db'), yearAndMonth).then((meals) => {
+		res.json(meals);
+	});
+});
 
-    if (!meal)
-      return res.status(404).json({
-        error: `meal doesn't exist`
-      .then(meal => {
-        res
-          .status(201)
-          .json(MealsService.serializeMeals(meal))
-      })
+mealsRouter
+	.route('/')
+	.get((req, res, next) => {
+		MealsService.getAllMeals(req.app.get('db'))
+			.then((meals) => {
+				res.status(200).json(meals);
+			})
+			.catch(next);
+	})
+	.post(jsonBodyParser, (req, res, next) => {
+		const newMeal = req.body;
+		if (newMeal.alldaycalories == null) {
+			newMeal.alldaycalories = 0;
+		}
+		MealsService.getMealsbyDate(req.app.get('db'), newMeal.dateofmeal)
+			.then((meals) => {
+				if (meals.length === 0) {
+					MealsService.insertMeals(req.app.get('db'), newMeal).then((meal) => {
+						res.status(201).json(meal);
+					});
+				} else {
+					const newAlldayCalories =
+						Number(meals[0].lunch_calories) +
+						Number(meals[0].dinner_calories) +
+						Number(meals[0].breakfast_calories);
+					newMeal.alldaycalories = newAlldayCalories;
+					MealsService.updateMeals(req.app.get('db'), newMeal.dateofmeal, newMeal.userid, newMeal).then(
+						res.json('updated')
+					);
+				}
+			})
+			.catch(next);
+	});
 
-    res.product = product
-    next()
-  } catch (error) {
-    next(error)
-  }
-}
-*/
-// Duy requested this to be commented out because it's handled in General Service
 
-module.exports = mealsRouter
+mealsRouter
+	.route('/:id')
+	.all((req, res, next) => checkItemExists(req, res, next, 'meals'))
+	.get((req, res, next) => {
+		MealsService.getMealById(req.app.get('db'), req.params.id)
+			.then((meal) => res.status(200).json(meal))
+			.catch(next);
+	})
+	.delete((req, res, next) => {
+		GeneralService.deleteItem(req.app.get('db'), 'meals', req.params.id).then(() =>
+			res.status(200).json('Meal has been deleted')
+		);
+	});
+
+module.exports = mealsRouter;

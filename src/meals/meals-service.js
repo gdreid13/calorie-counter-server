@@ -1,4 +1,5 @@
 const xss = require('xss');
+const mealsRouter = require('./meals-router');
 
 const userFields = [
   'usr.id AS user:id',
@@ -30,6 +31,29 @@ const MealsService = {
         .leftJoin('caloriecounter_users AS usr','meals.userid','usr.id')
   },
 
+	getallMeals(db) {
+		return db.select('*').from('meals');
+	},
+	getMealsByMonth(db,yearAndMonth){
+		return this.getAllMeals(db).where('dateofmeal','like',`${yearAndMonth}%`)
+	},
+	getMealsbyDate(db,date){
+		console.log(date)
+		return db.select('*').from('meals').where('dateofmeal',date);
+	},
+	getMealById(db, id) {
+		return db('meals')
+			.select('meals.id', 'meals.alldaycalories', 'meals.date_created', ...userFields)
+			.where('meals.id', id)
+			.first()
+			.leftJoin('caloriecounter_users AS usr', 'meals.userId', 'usr.id');
+	},
+	getMealsByUser(db, userId) {
+		return db('meals')
+			.select('meals.id', 'meals.alldaycalories', 'meals.date_created', ...userFields)
+			.where({ userId })
+			.leftJoin('caloriecounter_users AS usr', 'meals.userId', 'usr.id');
+	},
 
 	getAllMeals(db) {
 		return db.select('*').from('meals');
@@ -39,7 +63,7 @@ const MealsService = {
 		return MealsService.getAllMeals(db).where('meal.id', id).first();
 	},
 
-	serializeMeals(meal) {		
+	serializeMeals(meal) {
 		return {
 			id: meal.id,
 			alldaycalories: xss(meal.alldaycalories),
@@ -47,11 +71,11 @@ const MealsService = {
 		};
 	},
 
-	insertMeals(db, newMeal) {
-    console.log(newMeal)
-		return db
-			.insert(newMeal)
-			.into('meals')
+	insertMeals(db, newMeal) {		
+		return db.insert(newMeal).into('meals');
+	},
+	updateMeals(db, date, userid, meals) {		
+		return MealsService.getallMeals(db).where('dateofmeal', date).where('userid', userid).update(meals);
 	}
 };
 
