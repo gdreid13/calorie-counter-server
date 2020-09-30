@@ -149,8 +149,15 @@ const tools={
             "age": 18, "gender": "Male", "weight": "130", "height":"70"
         }
         const newMeal={
-            "userId": 2,
-            "alldaycalories": 900,
+            "userid": 1, 
+            "dateofmeal": "2020-09-23",
+            "breakfast_food": "milk",
+            "breakfast_calories": 200,
+            "lunch_food": "pasta",
+            "lunch_calories": 300,
+            "dinner_food": "chicken noodle soup",
+            "dinner_calories": 300,
+            "alldaycalories": 800
         }
         return {newUser,newMeal}
     },
@@ -160,7 +167,12 @@ const tools={
             //{"Without_password":{"username": "newUserName"}}
         ]
         const meal=[
-            {"Update_meal":{"alldaycalories":800}}
+            {"Update_meal":{
+                "breakfast_calories": 200,
+                "lunch_calories": 300,
+                "dinner_calories": 300,
+                "alldaycalories": 800
+            }}
         ]
         return {user,meal}
     },
