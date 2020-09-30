@@ -1,4 +1,5 @@
 require('dotenv').config();
+const { DATABASE_URL } = require('./src/config')
 
 module.exports = {
     "migrationDirectory": "migrations",
