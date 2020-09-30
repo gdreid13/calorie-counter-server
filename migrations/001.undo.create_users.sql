@@ -1,1 +1,1 @@
-DROP TABLE IF EXISTS calorieCounterUser CASCADE;
+DROP TABLE IF EXISTS caloriecounter_users CASCADE;
