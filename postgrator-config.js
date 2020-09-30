@@ -6,6 +6,6 @@ module.exports = {
     "driver": "pg",
     "connectionString": (process.env.NODE_ENV === 'test')
       ? process.env.TEST_DATABASE_URL
-      : 'postgres://yhttdkjnivnaon:6814d4f313c85a3d075a92609f64c9a513dad68611fb76bda1ec7d2dd367d38e@ec2-35-173-94-156.compute-1.amazonaws.com:5432/d6vl35rgavo1o',
-    "ssl": true,
+      : process.env.DATABASE_URL || 'postgres://lvrlcwxwmvnifd:52091952405b4355767c76f6e06cc3edb2fd3318e0c7eec336f1070650c1c8c9@ec2-107-22-33-173.compute-1.amazonaws.com:5432/dbh783irngqn00',
+    "ssl": !!process.env.SSL,
   }
