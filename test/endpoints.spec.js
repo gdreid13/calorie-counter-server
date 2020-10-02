@@ -7,7 +7,7 @@ const {testUsers,}= prepareTest.getData()
 const data= {testUsers,}
 
 
-describe('ALL ENDPOINTS',()=>{
+describe.only('ALL ENDPOINTS',()=>{
     let db;
     before('makeAuthHeader knex instance', () => {
         db = knex({
@@ -103,7 +103,7 @@ describe('ALL ENDPOINTS',()=>{
                         }
                     })
                     
-                    it.only(`GET`,()=>{
+                    it(`GET`,()=>{
                         //const expectedItem= AllItems.find(item=>item.id===validId)
                         //validFetch.GET.then(res=>console.log('body',res.body))
                         return validFetch.GET.expect(200,getItemById)
