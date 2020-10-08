@@ -40,11 +40,6 @@ and POST their meal information to track monthly calories.  AUTH login is requir
 * Express
 * PostgreSQL
 
-## To set up:
-yarn OR npm i / npm install
-createdb calorie-counter-server
-npm run migrate
-
 ## Endpoints:
 ***/api/auth***
 * GET auth token
