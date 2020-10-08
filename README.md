@@ -23,10 +23,10 @@ $ npm install
 ***postgresql://postgres@localhost/caloriecounter***
 * Run server
 
-Start the app:
+Start the server:
 
 ```sh
-$ npm start
+$ npm run dev
 ```
 
 ## Description
