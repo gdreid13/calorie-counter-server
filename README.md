@@ -18,11 +18,10 @@ Install project dependencies:
 ```sh
 $ npm install
 ```
-### npm i or npm install
-Setup .env files (For local use)
+***Setup .env files (For local use)***
 
-### postgresql://postgres@localhost/caloriecounter
-Run server
+***postgresql://postgres@localhost/caloriecounter***
+* Run server
 
 Start the app:
 
