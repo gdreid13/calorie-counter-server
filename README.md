@@ -1,15 +1,40 @@
-# calorie-counter-server
-
-This endpoint provides information for Calorie Counter App.  Users can GET
-and POST their meal information.  AUTH login is required.
-
+# Calorie Counter
+* This app uses the PERN stack
 ## Live: 
 https://calorie-counter-client.vercel.app
 
 ## Front-end repo:
 https://github.com/gdreid13/calorie-counter-client
 
-## Built with:
+### For developers
+Clone the source locally:
+
+```sh
+$ git clone https://github.com/gdreid13/calorie-counter-server.git
+```
+
+Install project dependencies:
+
+```sh
+$ npm install
+```
+### npm i or npm install
+Setup .env files (For local use)
+
+### postgresql://postgres@localhost/caloriecounter
+Run server
+
+Start the app:
+
+```sh
+$ npm start
+```
+
+## Description
+This endpoint provides information for Calorie Counter App.  Users can GET
+and POST their meal information to track monthly calories.  AUTH login is required to POST and interact with full functionality.
+
+## Technologies:
 * React
 * Node
 * Express
@@ -21,13 +46,13 @@ createdb calorie-counter-server
 npm run migrate
 
 ## Endpoints:
-/api/auth
+***/api/auth***
 * GET auth token
 
-/api/users
+***/api/users***
 * POST user
 
-/api/meals
+***/api/meals***
 * GET meals
 * POST meals
 * UPDATE meals
